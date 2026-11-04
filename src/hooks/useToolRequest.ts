@@ -1,9 +1,8 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { getErrorMessage, isCancel, type ProgressCallback } from "@/services/tools.service";
+import { getErrorMessage, isCancel, type ProgressCallback } from "@/services/http";
 
-/** Estado común de las herramientas: carga, progreso, error y resultado. */
 export function useToolRequest<T>() {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
