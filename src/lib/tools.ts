@@ -9,7 +9,6 @@ export interface ToolInfo {
   headline: string;
   subtitle: string;
   category: "Privacidad" | "Integridad";
-  /** Clases Tailwind para el color del icono/fondo. */
   accent: string;
 }
 
@@ -71,14 +70,9 @@ export const TOOLS: ToolInfo[] = [
   },
 ];
 
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  const units = ["KB", "MB", "GB"];
-  let value = bytes / 1024;
-  let i = 0;
-  while (value >= 1024 && i < units.length - 1) {
-    value /= 1024;
-    i++;
-  }
-  return `${value.toFixed(1)} ${units[i]}`;
+
+export function getTool(slug: string): ToolInfo {
+  const tool = TOOLS.find((t) => t.slug === slug);
+  if (!tool) throw new Error(`Herramienta no registrada: ${slug}`);
+  return tool;
 }
