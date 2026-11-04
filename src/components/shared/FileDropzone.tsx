@@ -2,34 +2,24 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone, type Accept, type FileRejection } from "react-dropzone";
-import { FileIcon, UploadCloud, X } from "lucide-react";
-import { Button, ProgressBar } from "@heroui/react";
-import { formatBytes } from "@/lib/tools";
+import { UploadCloud } from "lucide-react";
+import { BYTES_PER_MB } from "@/lib/limits";
+import { rejectionMessage } from "@/lib/file-rejection";
 import { ErrorAlert } from "./ErrorAlert";
+import { SelectedFileRow } from "./SelectedFileRow";
+import { UploadProgress } from "./UploadProgress";
 
 interface FileDropzoneProps {
   onFilesSelected: (files: File[]) => void;
   onClear?: () => void;
   accept?: Accept;
   maxSizeMB: number;
-  /** Progreso de subida 0-100; la barra aparece con isUploading. */
   progress?: number;
   isUploading?: boolean;
   disabled?: boolean;
-  /** Archivo ya seleccionado (para restaurar al remontar). */
   initialFile?: File | null;
-  /** Texto principal, p. ej. "Arrastra una imagen aquí o haz clic para seleccionar". */
   label: string;
-  /** Línea secundaria, p. ej. "Formatos: JPEG, PNG · Máximo 10 MB". */
   hint: string;
-}
-
-function rejectionMessage(rejections: FileRejection[], maxSizeMB: number): string {
-  const codes = new Set(rejections.flatMap((r) => r.errors.map((e) => e.code)));
-  if (codes.has("file-too-large")) return `El archivo supera el límite de ${maxSizeMB} MB.`;
-  if (codes.has("file-invalid-type")) return "El formato de archivo no está permitido en esta herramienta.";
-  if (codes.has("too-many-files")) return "Solo puedes seleccionar un archivo.";
-  return rejections[0]?.errors[0]?.message ?? "Archivo no válido.";
 }
 
 export function FileDropzone({
@@ -65,7 +55,7 @@ export function FileDropzone({
     accept,
     multiple: false,
     maxFiles: 1,
-    maxSize: maxSizeMB * 1024 * 1024,
+    maxSize: maxSizeMB * BYTES_PER_MB,
     disabled: disabled || isUploading,
   });
 
@@ -92,26 +82,8 @@ export function FileDropzone({
       </div>
 
       {error && <ErrorAlert message={error} />}
-
-      {file && (
-        <div className="flex items-center gap-3 rounded-xl border border-separator bg-surface px-4 py-3">
-          <FileIcon className="size-5 shrink-0 text-muted" aria-hidden />
-          <span className="min-w-0 flex-1 truncate text-sm font-medium">{file.name}</span>
-          <span className="text-xs text-muted">{formatBytes(file.size)}</span>
-          <Button isIconOnly size="sm" variant="ghost" aria-label={`Quitar ${file.name}`} onPress={clear} isDisabled={isUploading}>
-            <X className="size-4" />
-          </Button>
-        </div>
-      )}
-
-      {isUploading && (
-        <ProgressBar aria-label="Progreso de subida" value={progress}>
-          <ProgressBar.Output />
-          <ProgressBar.Track>
-            <ProgressBar.Fill />
-          </ProgressBar.Track>
-        </ProgressBar>
-      )}
+      {file && <SelectedFileRow file={file} onClear={clear} isDisabled={isUploading} />}
+      {isUploading && <UploadProgress value={progress} />}
     </div>
   );
 }

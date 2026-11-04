@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ExternalLink, ShieldCheck } from "lucide-react";
-import { API_URL } from "@/services/tools.service";
+import { API_URL } from "@/services/http";
 
 export function Navbar() {
   return (

@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react";
-import { CategoryBadge } from "@/components/shared/ToolPage";
+import { CategoryBadge } from "@/components/shared/CategoryBadge";
 import { ToolGrid } from "@/components/shared/ToolGrid";
 
 export default function Home() {
