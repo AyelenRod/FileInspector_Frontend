@@ -5,6 +5,7 @@ import { useDropzone, type Accept, type FileRejection } from "react-dropzone";
 import { UploadCloud } from "lucide-react";
 import { BYTES_PER_MB } from "@/lib/limits";
 import { rejectionMessage } from "@/lib/file-rejection";
+import { validateBasicFile } from "@/lib/security/file-validation";
 import { ErrorAlert } from "./ErrorAlert";
 import { SelectedFileRow } from "./SelectedFileRow";
 import { UploadProgress } from "./UploadProgress";
@@ -14,6 +15,7 @@ interface FileDropzoneProps {
   onClear?: () => void;
   accept?: Accept;
   maxSizeMB: number;
+  validate?: (file: File) => Promise<string | null>;
   progress?: number;
   isUploading?: boolean;
   disabled?: boolean;
@@ -27,6 +29,7 @@ export function FileDropzone({
   onClear,
   accept,
   maxSizeMB,
+  validate,
   progress = 0,
   isUploading = false,
   disabled = false,
@@ -38,16 +41,21 @@ export function FileDropzone({
   const [error, setError] = useState<string | null>(null);
 
   const onDrop = useCallback(
-    (accepted: File[], rejected: FileRejection[]) => {
+    async (accepted: File[], rejected: FileRejection[]) => {
       if (rejected.length) {
         setError(rejectionMessage(rejected, maxSizeMB));
+        return;
+      }
+      const validationError = await (validate ?? ((f: File) => validateBasicFile(f, maxSizeMB)))(accepted[0]);
+      if (validationError) {
+        setError(validationError);
         return;
       }
       setError(null);
       setFile(accepted[0]);
       onFilesSelected(accepted);
     },
-    [maxSizeMB, onFilesSelected],
+    [maxSizeMB, onFilesSelected, validate],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
