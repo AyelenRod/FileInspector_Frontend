@@ -10,10 +10,13 @@ export function useToolRequest<T>() {
   const [progress, setProgress] = useState(0);
 
   const controller = useRef<AbortController | null>(null);
+  const inFlight = useRef(false);
 
   const cancel = useCallback(() => controller.current?.abort(), []);
 
   const run = useCallback(async (request: (onProgress: ProgressCallback, signal: AbortSignal) => Promise<T>) => {
+    if (inFlight.current) return null;
+    inFlight.current = true;
     controller.current = new AbortController();
     setIsLoading(true);
     setError(null);
@@ -27,6 +30,7 @@ export function useToolRequest<T>() {
       if (!isCancel(e)) setError(getErrorMessage(e));
       return null;
     } finally {
+      inFlight.current = false;
       setIsLoading(false);
     }
   }, []);
