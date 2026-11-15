@@ -4,6 +4,7 @@ import { Button } from "@heroui/react";
 import { Download, Terminal } from "lucide-react";
 import { useClipboard } from "@/hooks/useClipboard";
 import { downloadBlob } from "@/lib/download";
+import { sanitizeFilename, shellQuote } from "@/lib/security/sanitize";
 import { API_URL } from "@/services/http";
 import type { MimeResult } from "@/types";
 
@@ -12,7 +13,10 @@ const CURL_KEY = "curl";
 export function MimeResultFooter({ data }: { data: MimeResult }) {
   const { copiedKey, copy } = useClipboard();
 
-  const copyCurl = () => copy(CURL_KEY, `curl -X POST ${API_URL}/mime/verify -F "file=@${data.filename}"`);
+  const copyCurl = () => copy(
+      CURL_KEY,
+      `curl -X POST ${shellQuote(`${API_URL}/mime/verify`)} -F ${shellQuote(`file=@${sanitizeFilename(data.filename)}`)}`,
+    );
 
   const exportJson = () =>
     downloadBlob(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }), `${data.filename}.mime.json`);
