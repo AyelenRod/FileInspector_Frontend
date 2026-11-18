@@ -32,8 +32,10 @@ export function getErrorMessage(error: unknown): string {
   if (axios.isCancel(error)) return "Operación cancelada.";
   if (error instanceof RateLimitError) return error.message;
   if (axios.isAxiosError(error)) {
-    const err = error as AxiosError<{ detail?: unknown }>;
+    const err = error as AxiosError<{ detail?: unknown; error?: { message?: unknown } }>;
     const detail = err.response?.data?.detail;
+    const apiMessage = err.response?.data?.error?.message;
+    if (typeof apiMessage === "string") return limitText(apiMessage);
     if (typeof detail === "string") return limitText(detail);
     if (err.code === "ECONNABORTED") return "El servidor tardó demasiado en responder.";
     if (!err.response) return "No se pudo conectar con el servidor.";
