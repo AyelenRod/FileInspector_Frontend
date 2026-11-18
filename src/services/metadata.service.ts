@@ -1,9 +1,17 @@
 import { api, toConfig, type ProgressCallback } from "./http";
+import { MAX_REMOVED_BLOCKS } from "@/lib/limits";
+import { blobMatchesImage } from "@/lib/security/magic-bytes";
+import { sanitizeFilename } from "@/lib/security/sanitize";
 import type { CleanMetadataResult, CleanOutputFormat, MetadataResult } from "@/types";
 
 function filenameFromDisposition(header: string | undefined, fallback: string): string {
   const match = header?.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
-  return match ? decodeURIComponent(match[1]) : fallback;
+  if (!match) return fallback;
+  try {
+    return sanitizeFilename(decodeURIComponent(match[1]), fallback);
+  } catch {
+    return fallback;
+  }
 }
 
 function toNumberOrNull(value: unknown): number | null {
@@ -12,7 +20,7 @@ function toNumberOrNull(value: unknown): number | null {
 
 function parseRemovedBlocks(header: unknown): string[] {
   const raw = String(header ?? "");
-  return raw ? raw.split(",").map((block) => block.trim()) : [];
+  return raw ? raw.split(",").slice(0, MAX_REMOVED_BLOCKS).map((block) => block.trim()) : [];
 }
 
 function fallbackCleanName(file: File, outputFormat: CleanOutputFormat): string {
@@ -40,6 +48,7 @@ export async function cleanMetadata(
     ...toConfig(onProgress, signal),
     responseType: "blob",
   });
+  if (!(await blobMatchesImage(res.data, outputFormat))) throw new Error("El servidor devolvió un archivo no válido.");
   const headers = res.headers;
   return {
     blob: res.data,

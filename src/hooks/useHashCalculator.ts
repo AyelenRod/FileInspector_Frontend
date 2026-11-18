@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useFileTool } from "./useFileTool";
 import { calculateHash } from "@/services/hash.service";
 import { DEFAULT_ALGORITHMS } from "@/lib/hash-algorithms";
+import { MAX_TEXT_LENGTH } from "@/lib/limits";
 import type { HashAlgorithm, HashInputMode, HashResult } from "@/types";
 
 export function useHashCalculator() {
@@ -12,7 +13,7 @@ export function useHashCalculator() {
   const [selected, setSelected] = useState<HashAlgorithm[]>(DEFAULT_ALGORITHMS);
   const { file, selectFile, clearFile, data, error, isLoading, progress, run, reset } = useFileTool<HashResult>();
 
-  const canSubmit = (mode === "file" ? !!file : text.length > 0) && selected.length > 0;
+  const canSubmit = (mode === "file" ? !!file : text.length > 0 && text.length <= MAX_TEXT_LENGTH) && selected.length > 0;
 
   const changeMode = (next: HashInputMode) => {
     setMode(next);
