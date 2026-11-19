@@ -1,32 +1,20 @@
 import { api, toConfig, type ProgressCallback } from "./http";
-import { fileToBase64 } from "@/lib/base64";
+import { base64ToBlob, fileToBase64 } from "@/lib/base64";
 import { MAX_REMOVED_BLOCKS } from "@/lib/limits";
-import { blobMatchesImage } from "@/lib/security/magic-bytes";
+import { blobMatchesImage, detectImageSignature, readHeader } from "@/lib/security/magic-bytes";
 import { sanitizeFilename } from "@/lib/security/sanitize";
-import type { CleanMetadataResult, CleanOutputFormat, MetadataResult } from "@/types";
+import type { CleanMetadataResult, MetadataResult } from "@/types";
 
-function filenameFromDisposition(header: string | undefined, fallback: string): string {
-  const match = header?.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
-  if (!match) return fallback;
-  try {
-    return sanitizeFilename(decodeURIComponent(match[1]), fallback);
-  } catch {
-    return fallback;
-  }
-}
-
-function toNumberOrNull(value: unknown): number | null {
-  return value != null && value !== "" && !isNaN(Number(value)) ? Number(value) : null;
-}
-
-function parseRemovedBlocks(header: unknown): string[] {
-  const raw = String(header ?? "");
-  return raw ? raw.split(",").slice(0, MAX_REMOVED_BLOCKS).map((block) => block.trim()) : [];
-}
-
-function fallbackCleanName(file: File, outputFormat: CleanOutputFormat): string {
-  const extension = outputFormat === "jpeg" ? "jpg" : "png";
-  return `limpio_${file.name.replace(/\.[^.]+$/, "")}.${extension}`;
+interface CleanResponse {
+  success: boolean;
+  data: {
+    filename: string;
+    file_type: string;
+    original_size_bytes: number;
+    cleaned_size_bytes: number;
+    removed_metadata: string[];
+    cleaned_file_base64: string;
+  };
 }
 
 interface ExifResponse {
@@ -73,26 +61,27 @@ export async function extractMetadata(file: File, onProgress?: ProgressCallback)
 
 export async function cleanMetadata(
   file: File,
-  outputFormat: CleanOutputFormat,
   onProgress?: ProgressCallback,
   signal?: AbortSignal,
 ): Promise<CleanMetadataResult> {
-  const form = new FormData();
-  form.append("file", file);
-  form.append("output_format", outputFormat);
-  const res = await api.post<Blob>("/metadata/clean", form, {
-    ...toConfig(onProgress, signal),
-    responseType: "blob",
-  });
-  if (!(await blobMatchesImage(res.data, outputFormat))) throw new Error("El servidor devolvió un archivo no válido.");
-  const headers = res.headers;
+  const { data } = await api.post<CleanResponse>(
+    "/clean",
+    { file_base64: await fileToBase64(file), filename: file.name },
+    toConfig(onProgress, signal),
+  );
+  const result = data.data;
+  const blob = base64ToBlob(result.cleaned_file_base64, result.file_type);
+  const expected = detectImageSignature(await readHeader(file));
+  if (!expected || !(await blobMatchesImage(blob, expected))) {
+    throw new Error("El servidor devolvió un archivo no válido.");
+  }
   return {
-    blob: res.data,
-    filename: filenameFromDisposition(headers["content-disposition"], fallbackCleanName(file, outputFormat)),
+    blob,
+    filename: sanitizeFilename(`limpio_${file.name}`),
     originalSize: file.size,
-    cleanSize: res.data.size,
-    removedBlocks: parseRemovedBlocks(headers["x-removed-blocks"]),
-    width: toNumberOrNull(headers["x-image-width"]),
-    height: toNumberOrNull(headers["x-image-height"]),
+    cleanSize: blob.size,
+    removedBlocks: result.removed_metadata.slice(0, MAX_REMOVED_BLOCKS),
+    width: null,
+    height: null,
   };
 }

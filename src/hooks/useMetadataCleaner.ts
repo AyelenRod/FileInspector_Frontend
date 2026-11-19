@@ -1,19 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import { useFileTool } from "./useFileTool";
 import { useObjectUrl } from "./useObjectUrl";
 import { cleanMetadata } from "@/services/metadata.service";
-import type { CleanMetadataResult, CleanOutputFormat } from "@/types";
+import type { CleanMetadataResult } from "@/types";
 
 export function useMetadataCleaner() {
-  const [format, setFormat] = useState<CleanOutputFormat>("jpeg");
   const { file, selectFile, clearFile, data, error, isLoading, progress, run, cancel } =
     useFileTool<CleanMetadataResult>();
   const previewUrl = useObjectUrl(data?.blob);
 
   const submit = () => {
-    if (file) run((p, s) => cleanMetadata(file, format, p, s));
+    if (file) run((p, s) => cleanMetadata(file, p, s));
   };
 
   const bytesSaved = data ? data.originalSize - data.cleanSize : 0;
@@ -21,8 +19,6 @@ export function useMetadataCleaner() {
 
   return {
     file,
-    format,
-    setFormat,
     selectFile,
     clearFile,
     submit,
