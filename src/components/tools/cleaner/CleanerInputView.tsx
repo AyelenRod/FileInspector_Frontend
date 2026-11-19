@@ -6,7 +6,6 @@ import { ImageDropzone } from "@/components/shared/ImageDropzone";
 import type { useMetadataCleaner } from "@/hooks/useMetadataCleaner";
 import { CleanerActions } from "./CleanerActions";
 import { CleanerPreviewPlaceholder } from "./CleanerPreviewPlaceholder";
-import { OutputFormatSelector } from "./OutputFormatSelector";
 
 type CleanerState = ReturnType<typeof useMetadataCleaner>;
 
@@ -21,7 +20,6 @@ export function CleanerInputView({ cleaner }: { cleaner: CleanerState }) {
             isUploading={cleaner.isLoading}
             progress={cleaner.progress}
           />
-          <OutputFormatSelector value={cleaner.format} onChange={cleaner.setFormat} disabled={cleaner.isLoading} />
           <CleanerActions
             canSubmit={!!cleaner.file}
             isLoading={cleaner.isLoading}

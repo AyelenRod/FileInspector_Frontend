@@ -8,8 +8,6 @@ export interface MetadataResult {
   extra: Record<string, string | number | null>;
 }
 
-export type CleanOutputFormat = "jpeg" | "png";
-
 export interface CleanMetadataResult {
   blob: Blob;
   filename: string;
