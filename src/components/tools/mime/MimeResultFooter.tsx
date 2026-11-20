@@ -13,9 +13,10 @@ const CURL_KEY = "curl";
 export function MimeResultFooter({ data }: { data: MimeResult }) {
   const { copiedKey, copy } = useClipboard();
 
-  const copyCurl = () => copy(
+  const copyCurl = () =>
+    copy(
       CURL_KEY,
-      `curl -X POST ${shellQuote(`${API_URL}/mime/verify`)} -F ${shellQuote(`file=@${sanitizeFilename(data.filename)}`)}`,
+      `f=${shellQuote(sanitizeFilename(data.filename))}; curl -X POST ${shellQuote(`${new URL(API_URL, window.location.origin).href}/mime`)} -H 'Content-Type: application/json' -d "{\\"file_base64\\":\\"$(base64 -w0 "$f")\\",\\"filename\\":\\"$f\\"}"`,
     );
 
   const exportJson = () =>

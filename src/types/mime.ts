@@ -9,7 +9,7 @@ export interface MimeResult {
   magic_ascii: string | null;
   signature_description: string | null;
   sha256: string | null;
-  confidence: number;
+  confidence: number | null;
   matches: boolean;
   analysis_ms: number | null;
 }

@@ -10,7 +10,9 @@ export function FormatComparison({ data }: { data: MimeResult }) {
     <>
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">Discrepancia de formato</h2>
-        <span className="text-xs text-muted">Confianza del motor: {data.confidence}%</span>
+        {data.confidence !== null && (
+          <span className="text-xs text-muted">Confianza del motor: {data.confidence}%</span>
+        )}
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
