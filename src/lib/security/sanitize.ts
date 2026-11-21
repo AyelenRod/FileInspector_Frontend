@@ -8,12 +8,6 @@ export function sanitizeFilename(name: string, fallback = "archivo"): string {
   return (cleaned || fallback).slice(0, 120);
 }
 
-export function escapeCsvCell(value: string | number | null): string {
-  const text = String(value ?? "");
-  const safe = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
-  return /[",\n\r]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
-}
-
 export function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'\''`)}'`;
 }
