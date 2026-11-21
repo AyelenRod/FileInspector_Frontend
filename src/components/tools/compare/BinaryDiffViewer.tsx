@@ -13,7 +13,7 @@ export function BinaryDiffViewer({ data, onReset }: { data: BinaryDiffResult; on
       {data.size_a !== data.size_b && <SizeMismatchNotice />}
       {data.total_differences > shown && <TruncatedDiffNotice shown={shown} />}
       {shown > 0 && <DiffOffsetsCard differences={data.differences} />}
-      <DiffActions differences={data.differences} onReset={onReset} />
+      <DiffActions onReset={onReset} />
     </div>
   );
 }
