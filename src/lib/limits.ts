@@ -8,3 +8,4 @@ export const MAX_ERROR_MESSAGE_LENGTH = 200;
 export const MAX_REMOVED_BLOCKS = 50;
 export const RATE_LIMIT_MAX_REQUESTS = 10;
 export const RATE_LIMIT_WINDOW_MS = 60_000;
+export const MAX_CREDENTIAL_LENGTH = 128;
