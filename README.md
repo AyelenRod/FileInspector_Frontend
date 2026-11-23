@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FileInspector · Frontend
 
-## Getting Started
+Interfaz web para analizar la seguridad de archivos. Se conecta a la API de FileInspector (FastAPI) y ofrece cinco herramientas, más un panel de métricas de acceso restringido.
 
-First, run the development server:
+## Herramientas
+
+| Herramienta | Endpoint |
+|---|---|
+| Extractor de metadatos EXIF | `POST /api/v1/exif` |
+| Limpiador de metadatos | `POST /api/v1/clean` |
+| Verificador de tipo MIME | `POST /api/v1/mime` |
+| Calculadora de hash (MD5, SHA-1, SHA-256, SHA-512) | `POST /api/v1/hash` |
+| Comparador binario | `POST /api/v1/compare` |
+
+El panel de métricas usa `POST /api/v1/auth/login` y `GET /api/v1/stats/*`. No está enlazado desde el sitio público y requiere una cuenta creada en el backend.
+
+## Stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · HeroUI · Axios
+
+## Puesta en marcha
+
+Requiere Node.js 20 o superior.
 
 ```bash
+npm install
+cp .env.local.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La app queda en http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Variables de entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Descripción | Valor por defecto |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | Ruta base que usa el navegador para llamar a la API. | `/api/v1` |
+| `BACKEND_URL` | URL del backend a la que Next reenvía las peticiones (proxy). | `http://localhost:8000` |
 
-## Learn More
+El backend no habilita CORS, por eso el navegador llama a `/api/v1` y Next reenvía la petición a `BACKEND_URL`.
 
-To learn more about Next.js, take a look at the following resources:
+### Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `npm run dev`: servidor de desarrollo.
+- `npm run build` y `npm start`: compilación y ejecución en producción.
+- `npm run lint`: revisión con ESLint.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Estructura
 
-## Deploy on Vercel
+```
+src/
+├─ app/         rutas (sitio público y panel)
+├─ components/  componentes por herramienta y compartidos
+├─ hooks/       estado y flujo de cada herramienta
+├─ services/    conexión con el backend
+├─ lib/         utilidades y módulo de seguridad (lib/security)
+└─ types/       tipos de datos
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Seguridad en el cliente
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Cabeceras HTTP de seguridad y Content Security Policy.
+- Validación de archivos por firma real (magic bytes), tamaño y nombre antes de subirlos.
+- Limitador de solicitudes en el navegador y control de peticiones duplicadas.
+- Validación de la URL de la API (HTTPS fuera de localhost) y sanitización de nombres de archivo y mensajes de error.
+- Verificación de que la imagen limpia devuelta por el servidor conserve el formato del original.
+
+## Licencias
+
+Este proyecto no define una licencia propia todavía. Mientras no se agregue un archivo `LICENSE`, todos los derechos quedan reservados por sus autores.
+
+Dependencias principales (licencias tomadas de sus `package.json`):
+
+| Paquete | Licencia |
+|---|---|
+| Next.js, React, React DOM, Axios, react-dropzone, Tailwind CSS, Framer Motion, clsx, tailwind-merge, ESLint | MIT |
+| HeroUI, TypeScript | Apache-2.0 |
+| lucide-react | ISC |
+
+Las fuentes Inter, Plus Jakarta Sans y Geist Mono se cargan con `next/font/google` y se distribuyen bajo la SIL Open Font License 1.1.
+
+La imagen del login (`public/images/login-hero.jpg`) es de un tercero y su licencia no está verificada; conviene confirmarla o reemplazarla antes de publicar el proyecto.
