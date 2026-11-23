@@ -1,13 +1,14 @@
 import { Button } from "@heroui/react";
-import { LogOut, RefreshCw, ShieldCheck } from "lucide-react";
+import { LogOut, RefreshCw, ShieldCheck, UserPlus } from "lucide-react";
 
 interface AdminHeaderProps {
   isLoading: boolean;
+  onCreateAdmin: () => void;
   onReload: () => void;
   onLogout: () => void;
 }
 
-export function AdminHeader({ isLoading, onReload, onLogout }: AdminHeaderProps) {
+export function AdminHeader({ isLoading, onCreateAdmin, onReload, onLogout }: AdminHeaderProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-separator bg-background/80 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
@@ -21,6 +22,9 @@ export function AdminHeader({ isLoading, onReload, onLogout }: AdminHeaderProps)
           </span>
         </div>
         <div className="flex items-center gap-2">
+          <Button size="sm" variant="secondary" onPress={onCreateAdmin}>
+            <UserPlus className="size-3.5" aria-hidden /> Nuevo administrador
+          </Button>
           <Button size="sm" variant="secondary" onPress={onReload} isDisabled={isLoading}>
             <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} aria-hidden /> Actualizar
           </Button>
