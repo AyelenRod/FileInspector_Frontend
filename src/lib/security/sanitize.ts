@@ -8,10 +8,6 @@ export function sanitizeFilename(name: string, fallback = "archivo"): string {
   return (cleaned || fallback).slice(0, 120);
 }
 
-export function shellQuote(value: string): string {
-  return `'${value.replace(/'/g, `'\''`)}'`;
-}
-
 export function limitText(value: string, max = MAX_ERROR_MESSAGE_LENGTH): string {
   return value.length > max ? `${value.slice(0, max)}…` : value;
 }
