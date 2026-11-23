@@ -13,5 +13,3 @@ export const ALGORITHMS: HashAlgorithmInfo[] = [
   { key: "sha256", label: "SHA-256", badge: "Recomendado", badgeClass: "bg-accent/30 text-danger" },
   { key: "sha512", label: "SHA-512", badge: "Robusto / Alta seguridad", badgeClass: "bg-default text-muted" },
 ];
-
-export const DEFAULT_ALGORITHMS: HashAlgorithm[] = ["md5", "sha1", "sha256", "sha512"];

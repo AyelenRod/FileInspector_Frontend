@@ -10,7 +10,7 @@ export function HashInputView({ calculator }: { calculator: CalculatorState }) {
   return (
     <div className="grid gap-5 lg:grid-cols-2">
       <HashInputCard calculator={calculator} />
-      <HashResultsPlaceholder isLoading={calculator.isLoading} selected={calculator.selected} />
+      <HashResultsPlaceholder isLoading={calculator.isLoading} />
     </div>
   );
 }

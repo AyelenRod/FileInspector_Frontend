@@ -4,7 +4,6 @@ import { useClipboard } from "@/hooks/useClipboard";
 import { ALGORITHMS } from "@/lib/hash-algorithms";
 import type { HashResult } from "@/types";
 import { HashValueCard } from "./HashValueCard";
-import { KnownHashComparer } from "./KnownHashComparer";
 
 export function HashCalculatorTable({ data }: { data: HashResult }) {
   const { copiedKey, copy } = useClipboard();
@@ -24,7 +23,6 @@ export function HashCalculatorTable({ data }: { data: HashResult }) {
           />
         );
       })}
-      <KnownHashComparer hashes={data.hashes} />
     </div>
   );
 }

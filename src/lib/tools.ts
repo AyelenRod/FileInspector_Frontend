@@ -52,7 +52,7 @@ export const TOOLS: ToolInfo[] = [
     title: "Calculadora de Hash",
     description: "Verifica la integridad de tus archivos.",
     headline: "Verifica la integridad de tus archivos",
-    subtitle: "Calcula hashes criptográficos MD5, SHA-1, SHA-256 y SHA-512 de cualquier archivo o texto para comprobar que no ha sido alterado.",
+    subtitle: "Calcula hashes criptográficos MD5, SHA-1, SHA-256 y SHA-512 de cualquier archivo para comprobar que no ha sido alterado.",
     category: "Integridad",
     icon: Fingerprint,
     accent: "bg-accent/20 text-danger",
