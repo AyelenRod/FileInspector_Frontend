@@ -12,7 +12,7 @@ export function LoginHero() {
     <aside className="relative hidden overflow-hidden lg:block">
       <Image
         src="/images/login-hero.jpg"
-        alt="Código fuente ampliado con una lupa que resalta un ciberataque"
+        alt="Código fuente desenfocado en una pantalla"
         fill
         priority
         sizes="50vw"
