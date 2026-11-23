@@ -79,4 +79,4 @@ Dependencias principales (licencias tomadas de sus `package.json`):
 
 Las fuentes Inter, Plus Jakarta Sans y Geist Mono se cargan con `next/font/google` y se distribuyen bajo la SIL Open Font License 1.1.
 
-La imagen del login (`public/images/login-hero.jpg`) es de un tercero y su licencia no está verificada; conviene confirmarla o reemplazarla antes de publicar el proyecto.
+La imagen del login (`public/images/login-hero.jpg`) proviene de [Unsplash](https://unsplash.com) y se usa bajo la [Unsplash License](https://unsplash.com/license).
