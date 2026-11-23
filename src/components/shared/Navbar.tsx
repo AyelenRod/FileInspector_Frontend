@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { ExternalLink, ShieldCheck } from "lucide-react";
-import { API_URL } from "@/services/http";
+import { ShieldCheck } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -12,14 +11,6 @@ export function Navbar() {
           </span>
           FileInspector
         </Link>
-        <a
-          href={`${API_URL.replace(/\/api$/, "")}/docs`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-xs text-muted hover:text-foreground"
-        >
-          Documentación de la API <ExternalLink className="size-3" aria-hidden />
-        </a>
       </nav>
     </header>
   );
