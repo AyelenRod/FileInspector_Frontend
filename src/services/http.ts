@@ -32,6 +32,10 @@ export function isUnauthorized(error: unknown): boolean {
   return axios.isAxiosError(error) && error.response?.status === 401;
 }
 
+export function isConflict(error: unknown): boolean {
+  return axios.isAxiosError(error) && error.response?.status === 409;
+}
+
 export function getErrorMessage(error: unknown): string {
   if (axios.isCancel(error)) return "Operación cancelada.";
   if (error instanceof RateLimitError) return error.message;

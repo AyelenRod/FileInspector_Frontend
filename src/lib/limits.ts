@@ -8,3 +8,6 @@ export const MAX_REMOVED_BLOCKS = 50;
 export const RATE_LIMIT_MAX_REQUESTS = 10;
 export const RATE_LIMIT_WINDOW_MS = 60_000;
 export const MAX_CREDENTIAL_LENGTH = 128;
+export const MIN_USERNAME_LENGTH = 3;
+export const MAX_USERNAME_LENGTH = 50;
+export const MIN_PASSWORD_LENGTH = 8;

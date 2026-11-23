@@ -13,6 +13,15 @@ function findToken(source: TokenSource): string | null {
   return null;
 }
 
+export async function createAdmin(token: string, username: string, password: string): Promise<string> {
+  const { data } = await api.post<{ data?: { username?: string } }>(
+    "/auth/admins",
+    { username, password },
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  return data.data?.username ?? username;
+}
+
 export async function login(username: string, password: string): Promise<string> {
   const { data } = await api.post<{ data?: TokenSource } & Record<string, unknown>>("/auth/login", {
     username,
