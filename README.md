@@ -67,9 +67,9 @@ src/
 
 ## Licencias
 
-Este proyecto no define una licencia propia todavía. Mientras no se agregue un archivo `LICENSE`, todos los derechos quedan reservados por sus autores.
+Este proyecto no incluye un archivo de licencia propio.
 
-Dependencias principales (licencias tomadas de sus `package.json`):
+Licencias de las dependencias principales:
 
 | Paquete | Licencia |
 |---|---|
