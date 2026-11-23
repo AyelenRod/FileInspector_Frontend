@@ -1,26 +1,36 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "@heroui/styles";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-headline);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Paleta FileInspector (Figma): primario #8B1E3F, secundario #E04B72, neutro #0B0B0E */
+html.dark {
+  --background: #0b0b0e;
+  --foreground: #ededf0;
+  --surface: #141418;
+  --surface-secondary: #1a1a1f;
+  --surface-tertiary: #202026;
+  --muted: #8f8f99;
+  --separator: #26262c;
+  --accent: #8b1e3f;
+  --accent-foreground: #ffe8ee;
+  --accent-hover: #a32349;
+  --danger: #e04b72;
+  --default: #1e1e24;
+  --default-foreground: #ededf0;
+  --field-background: #141418;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+h1, h2, h3, .font-heading {
+  font-family: var(--font-headline), system-ui, sans-serif;
 }
