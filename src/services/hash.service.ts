@@ -12,21 +12,15 @@ interface HashResponse {
   };
 }
 
-export async function calculateHash(
-  input: { file: File } | { text: string },
-  algorithms: HashAlgorithm[],
-  onProgress?: ProgressCallback,
-): Promise<HashResult> {
-  const content = "file" in input ? input.file : new Blob([input.text], { type: "text/plain" });
-  const filename = "file" in input ? input.file.name : "texto.txt";
+export async function calculateHash(file: File, onProgress?: ProgressCallback): Promise<HashResult> {
   const { data } = await api.post<HashResponse>(
     "/hash",
-    { file_base64: await fileToBase64(content), filename },
+    { file_base64: await fileToBase64(file), filename: file.name },
     toConfig(onProgress),
   );
   return {
     source: data.data.filename,
     size: data.data.file_size_bytes,
-    hashes: Object.fromEntries(algorithms.map((algorithm) => [algorithm, data.data.hashes[algorithm]])),
+    hashes: data.data.hashes,
   };
 }
